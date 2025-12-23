@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { getWarehouses, createTransfer, getStocksByWarehouse } from "../services/api";
+import { useApi } from "../services/useApi";
+
+
 
 export default function TransferForm({ onCreated }) {
+  const api = useApi();
   const [warehouses, setWarehouses] = useState([]);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -13,7 +16,7 @@ export default function TransferForm({ onCreated }) {
 
 
   useEffect(() => {
-    getWarehouses().then(setWarehouses);
+    api.getWarehouses().then(setWarehouses);
   }, []);
 
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function TransferForm({ onCreated }) {
     return;
   }
 
-  getStocksByWarehouse(from).then(setSourceStocks);
+  api.getStocksByWarehouse(from).then(setSourceStocks);
   }, [from]);
 
 
@@ -67,7 +70,7 @@ export default function TransferForm({ onCreated }) {
     setErrors({});
 
     try {
-      await createTransfer({
+      await api.createTransfer({
         fromWarehouseId: Number(from),
         toWarehouseId: Number(to),
         productName: product.trim(),

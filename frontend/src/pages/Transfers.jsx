@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { getTransfers, completeTransfer } from "../services/api";
 import TransferForm from "../components/TransferForm";
 import TransferList from "../components/TransferList";
+import { useApi } from "../services/useApi";
+
+
 
 export default function Transfers() {
+  const api = useApi();
   const [transfers, setTransfers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
@@ -11,7 +14,7 @@ export default function Transfers() {
   const load = async () => {
     setIsLoading(true);
     try {
-      const data = await getTransfers();
+      const data = await api.getTransfers();
       setTransfers(data);
     } catch (error) {
       console.error('Failed to load transfers:', error);
@@ -25,7 +28,12 @@ export default function Transfers() {
   }, []);
 
   const complete = async (id) => {
-    await completeTransfer(id);
+    await api.completeTransfer(id);
+    load();
+  };
+
+  const cancel = async (id) => {
+    await api.cancelTransfer(id);
     load();
   };
 
@@ -163,7 +171,7 @@ export default function Transfers() {
               </div>
             </div>
 
-            <TransferList transfers={filteredTransfers} onComplete={complete} />
+            <TransferList transfers={filteredTransfers} onComplete={complete} onCancel={cancel}/>
           </div>
         </div>
       )}

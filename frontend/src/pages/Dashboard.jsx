@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { getStocks, getWarehouses } from "../services/api";
 import WarehouseForm from "../components/WarehouseForm";
 import WarehouseList from "../components/WarehouseList";
 import StockTable from "../components/StockTable";
 import AddStockForm from "../components/AddStockForm";
+import { useApi } from "../services/useApi";
+
+
 
 export default function Dashboard() {
+  const api = useApi();
   const [stocks, setStocks] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,8 +18,8 @@ export default function Dashboard() {
     try {
 
       const [stocksData, warehousesData] = await Promise.all([
-        getStocks(),
-        getWarehouses()
+        api.getStocks(),
+        api.getWarehouses()
       ]);
       setStocks(stocksData);
       setWarehouses(warehousesData);

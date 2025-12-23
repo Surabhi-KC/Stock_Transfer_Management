@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { getTransfers } from "../services/api";
 import HistoryList from "../components/HistoryList";
+import { useApi } from "../services/useApi";
+
+
 
 export default function History() {
+  const api = useApi();
   const [transfers, setTransfers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,7 +14,7 @@ export default function History() {
   const load = async () => {
     setIsLoading(true);
     try {
-      const data = await getTransfers();
+      const data = await api.getTransfers();
       setTransfers(data);
     } catch (error) {
       console.error('Failed to load history:', error);
@@ -158,7 +161,6 @@ export default function History() {
                     <option value="ALL">All Statuses</option>
                     <option value="PENDING">Pending</option>
                     <option value="COMPLETED">Completed</option>
-                    <option value="IN_TRANSIT">In Transit</option>
                     <option value="CANCELLED">Cancelled</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">

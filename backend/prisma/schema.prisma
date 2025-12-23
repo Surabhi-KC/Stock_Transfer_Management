@@ -17,20 +17,21 @@ model Warehouse {
   id        Int      @id @default(autoincrement())
   name      String
   location  String
+  userId    String
   stocks    Stock[]
   fromTransfers StockTransfer[] @relation("fromWarehouse")
   toTransfers   StockTransfer[] @relation("toWarehouse")
   createdAt DateTime @default(now())
 }
 
-model Stock {
-  id          Int      @id @default(autoincrement())
+model Stock {    
   productName String
   quantity    Int
   warehouseId Int
+  userId    String
   warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
 
-  @@unique([warehouseId, productName])
+  @@id([userId, warehouseId, productName])
 }
 
 
@@ -42,6 +43,7 @@ model StockTransfer {
 
   fromWarehouseId Int
   toWarehouseId   Int
+  userId          String
 
   fromWarehouse   Warehouse @relation("fromWarehouse", fields: [fromWarehouseId], references: [id])
   toWarehouse     Warehouse @relation("toWarehouse", fields: [toWarehouseId], references: [id])
@@ -49,6 +51,7 @@ model StockTransfer {
   history         TransferHistory[]
   createdAt       DateTime @default(now())
 }
+
 
 model TransferHistory {
   id          Int      @id @default(autoincrement())
@@ -61,6 +64,6 @@ model TransferHistory {
 
 enum TransferStatus {
   PENDING
-  APPROVED
   COMPLETED
+  CANCELLED
 }

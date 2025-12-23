@@ -8,6 +8,7 @@
     "start": "node src/server.js"
   },
   "dependencies": {
+    "@clerk/backend": "^2.29.0",
     "@prisma/client": "^6.19.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",

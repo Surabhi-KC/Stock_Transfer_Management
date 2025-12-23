@@ -1,4 +1,5 @@
 import express from 'express';
+import { requireAuth } from "../middleware/auth.js";
 import {
   createWarehouse,
   getWarehouses
@@ -6,7 +7,7 @@ import {
 
 const router = express.Router();
 
-router.post('/', createWarehouse);
-router.get('/', getWarehouses);
+router.post('/', requireAuth, createWarehouse);
+router.get('/', requireAuth, getWarehouses);
 
 export default router;

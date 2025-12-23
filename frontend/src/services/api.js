@@ -1,57 +1,87 @@
 const BASE_URL = "http://localhost:5000";
 
-export async function getWarehouses() {
-  const res = await fetch(`${BASE_URL}/warehouses`);
-  return res.json();
-}
+export function createApi(getToken) {
+  async function authFetch(url, options = {}) {
+    const token = await getToken();
 
-export async function createWarehouse(data) {
-  const res = await fetch(`${BASE_URL}/warehouses`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  return res.json();
-}
+    if (!token) {
+      throw new Error("Not authenticated");
+    }
 
-export async function getStocks() {
-  const res = await fetch(`${BASE_URL}/stocks`);
-  return res.json();
-}
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
 
-export async function getTransfers() {
-  const res = await fetch(`${BASE_URL}/transfers`);
-  return res.json();
-}
+  return {
+    /* Warehouses */
+    async getWarehouses() {
+      const res = await authFetch(`${BASE_URL}/warehouses`);
+      return res.json();
+    },
 
-export async function createTransfer(data) {
-  const res = await fetch(`${BASE_URL}/transfers`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  return res.json();
-}
+    async createWarehouse(data) {
+      const res = await authFetch(`${BASE_URL}/warehouses`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      return res.json();
+    },
 
-export async function completeTransfer(id) {
-  const res = await fetch(`${BASE_URL}/transfers/${id}/status`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status: "COMPLETED" }),
-  });
-  return res.json();
-}
+    /* Stocks */
+    async getStocks() {
+      const res = await authFetch(`${BASE_URL}/stocks`);
+      return res.json();
+    },
 
-export async function addStock(data) {
-  const res = await fetch(`${BASE_URL}/stocks`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  return res.json();
-}
+    async addStock(data) {
+      const res = await authFetch(`${BASE_URL}/stocks`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      return res.json();
+    },
 
-export async function getStocksByWarehouse(warehouseId) {
-  const res = await fetch(`http://localhost:5000/stocks?warehouseId=${warehouseId}`);
-  return res.json();
+    async getStocksByWarehouse(warehouseId) {
+      const res = await authFetch(
+        `${BASE_URL}/stocks?warehouseId=${warehouseId}`
+      );
+      return res.json();
+    },
+
+    /* Transfers */
+    async getTransfers() {
+      const res = await authFetch(`${BASE_URL}/transfers`);
+      return res.json();
+    },
+
+    async createTransfer(data) {
+      const res = await authFetch(`${BASE_URL}/transfers`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      return res.json();
+    },
+
+    async completeTransfer(id) {
+      const res = await authFetch(
+        `${BASE_URL}/transfers/${id}/status`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({ status: "COMPLETED" }),
+        }
+      );
+      return res.json();
+    },
+    async cancelTransfer(id) {
+        return authFetch(`${BASE_URL}/transfers/${id}/cancel`, {
+        method: "PATCH",
+      });
+    }
+  };
 }

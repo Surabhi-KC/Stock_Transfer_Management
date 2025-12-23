@@ -88,14 +88,16 @@ export default function HistoryList({ transfers }) {
               </div>
               
               <div className="space-y-3">
-                {t.history.map((h, idx) => (
+                {[...t.history]
+                .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                .map((h, idx) => (
                   <div key={h.id} className="flex gap-3">
                     <div className="flex flex-col items-center">
                       <div className={`
                         w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
-                        ${idx === 0 ? 'bg-blue-600' : 'bg-slate-200'}
+                        ${idx === t.history.length - 1 ? 'bg-blue-600' : 'bg-slate-200'}
                       `}>
-                        {idx === 0 ? (
+                        {idx === t.history.length - 1 ? (
                           <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
@@ -125,8 +127,7 @@ export default function HistoryList({ transfers }) {
                       </div>
                       <div className="text-sm text-slate-600">
                         {h.status === 'PENDING' && 'Transfer request created and awaiting processing'}
-                        {h.status === 'IN_TRANSIT' && 'Items are being moved between warehouses'}
-                        {h.status === 'COMPLETED' && 'Transfer greenfully completed'}
+                        {h.status === 'COMPLETED' && 'Transfer successfully completed'}
                         {h.status === 'CANCELLED' && 'Transfer was cancelled'}
                       </div>
                     </div>

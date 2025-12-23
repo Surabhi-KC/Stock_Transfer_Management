@@ -1,7 +1,7 @@
 import { useState } from "react";
 import StatusBadge from "./StatusBadge";
 
-export default function TransferList({ transfers, onComplete }) {
+export default function TransferList({ transfers, onComplete, onCancel }) {
   const [loadingId, setLoadingId] = useState(null);
 
   const handleComplete = async (id) => {
@@ -12,6 +12,23 @@ export default function TransferList({ transfers, onComplete }) {
       setLoadingId(null);
     }
   };
+
+const handleCancel = async (id) => {
+  if (!confirm("Are you sure you want to cancel this transfer?")) return;
+
+  try {
+    setLoadingId(id);
+    await cancelTransfer(id);
+    await load();
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "Failed to cancel transfer");
+  } finally {
+    setLoadingId(null);
+  }
+};
+
+
 
   if (!transfers.length) {
     return (
@@ -103,29 +120,59 @@ export default function TransferList({ transfers, onComplete }) {
               
               <td className="text-right">
                 {t.status === "PENDING" && (
-                  <button
-                    onClick={() => handleComplete(t.id)}
-                    disabled={loadingId === t.id}
-                    className="btn-green btn-sm inline-flex items-center gap-2"
-                  >
-                    {loadingId === t.id ? (
-                      <>
-                        <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Completing...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Complete
-                      </>
-                    )}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    
+                    {/* COMPLETE */}
+                    <button
+                      onClick={() => handleComplete(t.id)}
+                      disabled={loadingId === t.id}
+                      className="btn-green btn-sm inline-flex items-center gap-2"
+                    >
+                      {loadingId === t.id ? (
+                        <>
+                          <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Completing...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Complete
+                        </>
+                      )}
+                    </button>
+                    
+                    {/* CANCEL */}
+                    <button
+                      onClick={() => onCancel(t.id)}
+                      disabled={loadingId === t.id}
+                      className="btn-red btn-sm inline-flex items-center gap-2"
+                    >
+                      {loadingId === t.id ? (
+                        <>
+                          <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Cancelling...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          Cancel
+                        </>
+                      )}
+                    </button>
+                    
+                  </div>
                 )}
+
                 {t.status === "COMPLETED" && (
                   <span className="text-sm text-slate-500 italic">Completed</span>
                 )}

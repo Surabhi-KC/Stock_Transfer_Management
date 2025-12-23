@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { createWarehouse } from "../services/api";
+import { useApi } from "../services/useApi";
 
 export default function WarehouseForm({ onCreated }) {
+  const api = useApi();
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +28,7 @@ export default function WarehouseForm({ onCreated }) {
     setErrors({});
 
     try {
-      await createWarehouse({ name: name.trim(), location: location.trim() });
+      await api.createWarehouse({ name: name.trim(), location: location.trim() });
       setName("");
       setLocation("");
       onCreated();

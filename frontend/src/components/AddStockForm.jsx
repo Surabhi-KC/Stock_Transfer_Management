@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { getWarehouses, addStock } from "../services/api";
+import { useApi } from "../services/useApi";
+
+
 
 export default function AddStockForm({ onAdded }) {
+  const api = useApi();
   const [warehouses, setWarehouses] = useState([]);
   const [warehouseId, setWarehouseId] = useState("");
   const [productName, setProductName] = useState("");
@@ -17,7 +20,7 @@ export default function AddStockForm({ onAdded }) {
   });
 
   useEffect(() => {
-    getWarehouses().then(setWarehouses);
+    api.getWarehouses().then(setWarehouses);
   }, []);
 
   // Clear specific error when field is modified
@@ -69,7 +72,7 @@ export default function AddStockForm({ onAdded }) {
     setIsLoading(true);
     
     try {
-      await addStock({
+      await api.addStock({
         warehouseId: Number(warehouseId),
         productName: productName.trim(),
         quantity: Number(quantity),
