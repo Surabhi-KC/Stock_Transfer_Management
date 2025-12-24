@@ -15,7 +15,7 @@ Frontend deployed on **Vercel**
   [https://stock-transfer-management-frontend.vercel.app](https://stock-transfer-management-frontend.vercel.app)
 
 - **Backend API (Render):**  
-  [https://stock-transfer-management-backend.onrender.com](https://stock-transfer-management-backend.onrender.com/health)
+  [https://stock-transfer-management-backend.onrender.com/health](https://stock-transfer-management-backend.onrender.com/health)
 
 ---
 
@@ -254,5 +254,6 @@ The stack supports:
 - Atomic database transactions
 - Clean separation between frontend and backend
 - Scalability for future enhancements
+
 
 
