@@ -19,7 +19,7 @@ Frontend deployed on **Vercel**
 
 ---
 
-## 📌 Example Usage
+## Example Usage
 
 1. **Login**
    - Users authenticate securely using Clerk.
@@ -147,7 +147,7 @@ frontend/
 ├── vercel.json
 └── package.json
 ```
-## ⚙️ Environment Variables
+## Environment Variables
 
 ### Backend (`.env`)
 ```env
@@ -191,7 +191,7 @@ npm install
 npm run dev
 ```
 
-## 🔧 Reason for Choice of Tech Stack
+## Reason for Choice of Tech Stack
 
 The technology stack for this project was chosen to balance **developer productivity, scalability, security, and real-world industry relevance**.
 
@@ -254,6 +254,7 @@ The stack supports:
 - Atomic database transactions
 - Clean separation between frontend and backend
 - Scalability for future enhancements
+
 
 
 
