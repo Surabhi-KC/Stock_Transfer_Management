@@ -158,6 +158,8 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
 VITE_API_BASE_URL=https://stock-transfer-management-backend.onrender.com
 ```
 
+---
+
 ## API Endpoints
 
 ### Warehouses
@@ -191,6 +193,79 @@ npm install
 npm run dev
 ```
 
+---
+
+## Deployment Guide
+
+## Backend Deployment (Render)
+
+### 1. Prepare Backend Repository
+Ensure only backend files are pushed to the backend repository.
+
+Required files:
+- `src/`
+- `prisma/`
+- `package.json`
+- `package-lock.json`
+- `.env.example`
+
+Add a health check route:
+```js
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+```
+
+### 2. Create Web Service on Render
+- Go to Render Dashboard
+- Click New → Web Service
+- Connect your GitHub backend repository
+- Select:
+    Environment: Node
+    Region: Closest to you
+
+### 3. Render Build & Start Commands
+- Use the following configuration:
+     Build Command: npm install && npx prisma generate
+     Start Command: node src/server.js
+ - Do NOT use npm run dev in production.
+
+### 4. Environment Variables (Render)
+- Add the following in Render → Environment Variables:
+    DATABASE_URL=postgresql://...
+    JWT_SECRET=your_secret
+    NODE_ENV=production
+- Run Prisma migrations: npx prisma migrate deploy
+
+### 5. Verify Backend
+- After deployment, test: GET https://your-backend.onrender.com/health
+- Expected response: { "status": "ok" }
+
+## Frontend Deployment (Vercel)
+### 1. Prepare Frontend
+- Update API base URL:
+    const API_BASE_URL = "https://your-backend.onrender.com";
+- Ensure .env is NOT committed:
+    VITE_API_BASE_URL=https://your-backend.onrender.com
+
+### 2. Deploy on Vercel
+- Go to Vercel Dashboard
+- Click New Project
+- Import frontend repository
+- Framework: Vite / React
+- Build Command: npm run build
+
+### 3. Environment Variables (Vercel)
+- Add: VITE_API_BASE_URL=https://your-backend.onrender.com
+- Redeploy after saving variables.
+
+### Production Notes
+- Render free tier may sleep after inactivity.
+- First request may take ~30 seconds.
+- All database operations are atomic using Prisma transactions.
+
+  ---
+  
 ## Reason for Choice of Tech Stack
 
 The technology stack for this project was chosen to balance **developer productivity, scalability, security, and real-world industry relevance**.
@@ -254,6 +329,7 @@ The stack supports:
 - Atomic database transactions
 - Clean separation between frontend and backend
 - Scalability for future enhancements
+
 
 
 
